@@ -4,9 +4,9 @@ import traceback
 import logging
 import datetime
 import sqlite3
-from servo import Servo
-from weight import WeightScale
-from lcd import LCD
+from servo.servo import Servo
+from weight.weight import WeightScale
+from lcd.lcd import LCD
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -67,7 +67,6 @@ def test():
                     stop += 1
                     if stop == 1: break
             lcd.finish_message()
-            show_all()
 
         except KeyboardInterrupt:
             servo.stop(0.0)
