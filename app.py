@@ -2,36 +2,16 @@ import RPi.GPIO as GPIO
 from flask import Flask, render_template, request
 import traceback
 import logging
-import datetime
-import sqlite3
-from servo.servo import Servo
-from weight.weight import WeightScale
-from lcd.lcd import LCD
+from database.service import add
+from sensors.servo.servo import Servo
+from sensors.weight.weight import WeightScale
+from sensors.lcd.lcd import LCD
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
-
-
 servo = Servo()
 weight = WeightScale()
 lcd = LCD()
-
-
-def add_to_data_base(name, grams):
-    connection = sqlite3.connect('database/dogs.db')
-    cur = connection.cursor()
-    cur.execute("INSERT INTO feeding (timestamp, name, grams) VALUES (?, ?, ?)",
-                (datetime.datetime.now(), name, grams)
-                )
-    print("Added record to database")
-    connection.commit()
-    connection.close()
-
-
-def show_all():
-    connection = sqlite3.connect('database/dogs.db')
-    feedings = connection.execute('SELECT * FROM feeding').fetchall()
-    print(feedings)
 
 
 @app.route("/")
@@ -47,7 +27,7 @@ def test():
     try:
         name = request.form["name"]
         grams = float(request.form["grams"])
-        add_to_data_base(name, grams)
+        add(name, grams)
         try:
             stop = 0
             lcd.message("Start\nfeeding...", 3)
@@ -67,7 +47,6 @@ def test():
                     stop += 1
                     if stop == 1: break
             lcd.finish_message()
-
         except KeyboardInterrupt:
             servo.stop(0.0)
             GPIO.cleanup()
