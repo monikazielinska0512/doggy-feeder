@@ -1,20 +1,18 @@
-import time
 import RPi.GPIO as GPIO
 import pigpio
+from time import sleep
+
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
+pin: int = 18
+pi: pigpio.pi = pigpio.pi()
+GPIO.setup(pin, GPIO.OUT)
 
-class Servo:
-    def __init__(self):
-        self.pin = 18
-        GPIO.setup(self.pin, GPIO.OUT)
-        self.pi = pigpio.pi()
+def run(time: float):
+  pi.set_servo_pulsewidth(pin, 1499)
+  sleep(time)
 
-    def run(self, t):
-        self.pi.set_servo_pulsewidth(self.pin, 1499)
-        time.sleep(t)
-
-    def stop(self, t):
-        self.pi.set_servo_pulsewidth(self.pin, 1511)
-        time.sleep(t)
+def stop(time: float):
+  pi.set_servo_pulsewidth(pin, 1511)
+  sleep(time)
