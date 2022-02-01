@@ -1,1 +1,1 @@
-# doggy-feeder
+# Embeded systems project - doggy-feeder
